@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Consolidate</string>
+
+    <string-array name ="names">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+
+    </string-array>
+</resources>
