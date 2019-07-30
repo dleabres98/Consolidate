@@ -70,8 +70,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View view) {
                 debt.consolidateDebts();
                 Log.d("myTag", debt.toString());
+                debt.minimizeTransactions();
             }
         });
+
+        debt.addTransaction(1, 0, 5);
+        debt.addTransaction(1, 2, 5);
+        debt.addTransaction(1, 0, 8);
+        debt.addTransaction(0, 1, 12);
+        debt.addTransaction(0, 1, 8);
+        debt.addTransaction(0, 1, 25);
+        debt.addTransaction(0, 1, 45);
+        debt.addTransaction(0, 2, 30);
+        debt.addTransaction(2, 1, 12);
+        debt.addTransaction(2, 0, 6);
+
 
 
 
