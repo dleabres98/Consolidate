@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spOwed.setAdapter(adapter);
         spOwed.setOnItemSelectedListener(this);
 
-        //IMPORTANT CODE
-        int size = 3;
+
+        int size = 5;
         int[][] arr = new int[size][size];
 
         final Recordbook debt = new Recordbook(size, arr );
@@ -74,17 +74,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        debt.addTransaction(1, 0, 5);
-        debt.addTransaction(1, 2, 5);
-        debt.addTransaction(1, 0, 8);
-        debt.addTransaction(0, 1, 12);
-        debt.addTransaction(0, 1, 8);
-        debt.addTransaction(0, 1, 25);
-        debt.addTransaction(0, 1, 45);
-        debt.addTransaction(0, 2, 30);
-        debt.addTransaction(2, 1, 12);
-        debt.addTransaction(2, 0, 6);
 
+
+        debt.addTransaction(1, 0, 5);
+        debt.addTransaction(1, 3, 5);
+        debt.addTransaction(1, 0, 8);
+        debt.addTransaction(4, 3, 12);
+        debt.addTransaction(0, 1, 8);
+        debt.addTransaction(2, 1, 25);
+        debt.addTransaction(0, 1, 45);
+        debt.addTransaction(4, 2, 30);
+        debt.addTransaction(2, 1, 12);
+        debt.addTransaction(3, 4, 6);
+
+
+
+        //generate some random inputs here
+
+        /*
+        int first, second, val;
+        for (int i = 0; i < 80; i++) {
+            first = (int)(5*Math.random());
+            second = (int)(5*Math.random());
+            val = (int)(50*Math.random());
+            if (first!= second) {
+                debt.addTransaction(first, second, val);
+                System.out.println("adding " + first + " owes " + second + " $" + val);
+            }
+        }*/
 
 
 

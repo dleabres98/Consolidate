@@ -12,14 +12,17 @@ public class Recordbook {
     private int size = 0;
     private int[][] table;
     private int finalIndex = 0;
-    Transaction[] finalDebts = new Transaction[3];
+    Transaction[] finalDebts = new Transaction[6];
+
+    List<Transaction> finalDebtsList = new ArrayList<>();
 
 
+    //construct a 2 dimensional array n x n
+    //[r][c] represents amt r owes c
     public Recordbook(int x, int[][] arr) {
 
         size = x;
         table = arr;
-
         int[][] table = new int[size][size];
 
         for (int r = 0; r < size; r++) {
@@ -28,11 +31,6 @@ public class Recordbook {
             }
         }
         System.out.println("array initialized");
-
-
-
-
-
     }
 
     public void addTransaction(int a, int  b, int amount) {
@@ -44,14 +42,15 @@ public class Recordbook {
             for (int c = 0; c < size; c++) {
                 if (r!=c && table[r][c] != 0) {
                     System.out.println("" + r + " owes " + c + " $" + table[r][c]);
-
                 }
-
             }
         }
-        return "done";
+        return "done printing";
     }
 
+    //this method balances mirrored debts
+    //ex: if A owes B $5, and B owes A $3
+    //this would rewrite A owes B $2
     public void consolidateDebts() {
         for (int r = 0; r <= size/2; r++) {
             for (int c = 0; c < size; c++) {
@@ -70,12 +69,17 @@ public class Recordbook {
             }
         }
 
+        //once all mirrored debts are handled, add all remaining debts to an array
+        //as type Transaction() for easier data manipulation
+
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
-                if (r!=c && table[r][c] != 0) {
+                if ( r!=c && table[r][c] != 0) {
                     System.out.println("" + r + " owes " + c + " $" + table[r][c]);
                     finalDebts[finalIndex] = new Transaction(""+ r, ""+ c, table[r][c]);
                     finalIndex++;
+
+                    finalDebtsList.add(new Transaction(""+ r, ""+ c, table[r][c]));
                 }
 
             }
@@ -83,7 +87,7 @@ public class Recordbook {
 
     }
 
-    //bread and butter method!
+
     //this is the final method called, it will produce the ultimate list of payments due
     //from each individual
     public void minimizeTransactions() {
@@ -96,12 +100,17 @@ public class Recordbook {
         }
 
         //determine the NET value owed, negative means you have to PAY, positive means you get PAID
-        for(int i = 0; i < finalDebts.length; i++) {
+        for(int i = 0; i < finalIndex; i++) {
+            /*
             sortedDebts[ finalDebts[i].returnGiver() ].addDebt(finalDebts[i].returnAmt()*-1);
             sortedDebts[ finalDebts[i].returnTaker() ].addDebt((finalDebts[i].returnAmt()));
+            */
+            sortedDebts[ finalDebtsList.get(i).returnGiver() ].addDebt(finalDebts[i].returnAmt());
+            sortedDebts[ finalDebtsList.get(i).returnTaker() ].addDebt((finalDebts[i].returnAmt())*-1);
+
         }
 
-        //sorted with CompareTo in Person object
+        //sorted with CompareTo in Person object, in ascending order of net debt
         Arrays.sort(sortedDebts);
 
         for (int i = 0; i < size; i++) {
@@ -118,14 +127,18 @@ public class Recordbook {
                 firstReceiverIndex += 1;
             }
         }
+        //TODO: Show this on the interface somehow
         System.out.println(getFinalDebts(sortedDebts, firstReceiverIndex));
     }
+
+
+
 
     public List<String> getFinalDebts(Person[] arr, int index) {
         List<String> list = new ArrayList<String>();
         int leftIndex = 0;
         int rightIndex = index;
-        for (int i = 0; i < size-1; i++) {
+        while (leftIndex < index && rightIndex < arr.length) {
 
             //if the PAYER can cover MORE of the PAYEE'S value
             if ((arr[leftIndex].returnNetAmt()*-1) > arr[rightIndex].returnNetAmt()) {
@@ -139,15 +152,13 @@ public class Recordbook {
                 arr[rightIndex].addDebt(arr[leftIndex].returnNetAmt() * -1);
                 leftIndex++;
 
-            //if they are equal
+            //if they are equal - need to test this
             } else {
+                System.out.println("\n\nequal\n\n");
                 list.add("" + arr[leftIndex].returnID() + " owes " + arr[rightIndex].returnID() + " $" + (arr[leftIndex].returnNetAmt()*-1));
-
                 leftIndex++;
                 rightIndex++;
-
             }
-
         }
 
         return list;

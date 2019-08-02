@@ -12,9 +12,10 @@ public class Transaction {
     }
 
     public int returnAmt() { return amount; }
-    public int returnTaker() { return Integer.parseInt(taker); }
-    public int returnGiver() { return Integer.parseInt(giver); }
 
+    public int returnTaker() { return Integer.parseInt(taker); }
+
+    public int returnGiver() { return Integer.parseInt(giver); }
 
     public String toString() {
         return taker + " owes " + giver + " $" + amount;
