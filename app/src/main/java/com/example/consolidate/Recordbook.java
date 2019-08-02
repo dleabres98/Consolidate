@@ -1,8 +1,11 @@
 package com.example.consolidate;
 
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class Recordbook {
@@ -71,7 +74,6 @@ public class Recordbook {
             for (int c = 0; c < size; c++) {
                 if (r!=c && table[r][c] != 0) {
                     System.out.println("" + r + " owes " + c + " $" + table[r][c]);
-                    Log.d("myTag", "adding new to finaldebt[" + finalIndex + "]");
                     finalDebts[finalIndex] = new Transaction(""+ r, ""+ c, table[r][c]);
                     finalIndex++;
                 }
@@ -81,97 +83,74 @@ public class Recordbook {
 
     }
 
-
+    //bread and butter method!
+    //this is the final method called, it will produce the ultimate list of payments due
+    //from each individual
     public void minimizeTransactions() {
-        //find smallest debt
-        int[] netValue = new int[3]; //init to all zeros
-        int numPayers = 0;
+
+        //this array will be used to determine who pays who (sorted in ascending order of debt)
         Person[] sortedDebts = new Person[size];
-
-
-        for (int i = 0; i < 3; i++) {
-            netValue[i] = 0;
-        }
 
         for(int i = 0; i < size; i++) {
             sortedDebts[i] = new Person(i, 0);
         }
 
-
+        //determine the NET value owed, negative means you have to PAY, positive means you get PAID
         for(int i = 0; i < finalDebts.length; i++) {
-            netValue[ finalDebts[i].returnGiver() ] -= finalDebts[i].returnAmt();
-            netValue[ finalDebts[i].returnTaker() ] += finalDebts[i].returnAmt();
-
             sortedDebts[ finalDebts[i].returnGiver() ].addDebt(finalDebts[i].returnAmt()*-1);
             sortedDebts[ finalDebts[i].returnTaker() ].addDebt((finalDebts[i].returnAmt()));
-
         }
-        System.out.println("\nNet Amts are as follows, negative is amt to be paid \n");
+
+        //sorted with CompareTo in Person object
         Arrays.sort(sortedDebts);
+
         for (int i = 0; i < size; i++) {
             System.out.println("" + sortedDebts[i]);
         }
 
-
+        //now that we have a sorted array, we need to find the index of first positive, non-zero
+        //if there is a zero element, we should remove that person (worry about that later)
+        int firstReceiverIndex = 0;
         for (int i = 0; i < size; i++) {
-            System.out.println("\n" + i + "'s net is  " + netValue[i] + "\n");
-            if (netValue[i] > 0) {
-                numPayers++;
+            if (sortedDebts[i].returnNetAmt() > 0) {
+                break;
+            } else {
+                firstReceiverIndex += 1;
             }
         }
+        System.out.println(getFinalDebts(sortedDebts, firstReceiverIndex));
+    }
 
+    public List<String> getFinalDebts(Person[] arr, int index) {
+        List<String> list = new ArrayList<String>();
+        int leftIndex = 0;
+        int rightIndex = index;
+        for (int i = 0; i < size-1; i++) {
 
-        for (int i = 0; i < size; i++) {
-            sortedDebts[i] = new Person(i, netValue[i]);
+            //if the PAYER can cover MORE of the PAYEE'S value
+            if ((arr[leftIndex].returnNetAmt()*-1) > arr[rightIndex].returnNetAmt()) {
+                list.add("" + arr[leftIndex].returnID() + " owes " + arr[rightIndex].returnID() + "$" + (arr[rightIndex].returnNetAmt()*-1));
+                arr[leftIndex].addDebt(arr[rightIndex].returnNetAmt() * -1);
+                rightIndex++;
+
+            //if the PAYER can only cover SOME of the PAYEE's value
+            } else if ((arr[leftIndex].returnNetAmt()*-1) < arr[rightIndex].returnNetAmt()) {
+                list.add("" + arr[leftIndex].returnID() + " owes " + arr[rightIndex].returnID() + " $" + (arr[leftIndex].returnNetAmt()*-1));
+                arr[rightIndex].addDebt(arr[leftIndex].returnNetAmt() * -1);
+                leftIndex++;
+
+            //if they are equal
+            } else {
+                list.add("" + arr[leftIndex].returnID() + " owes " + arr[rightIndex].returnID() + " $" + (arr[leftIndex].returnNetAmt()*-1));
+
+                leftIndex++;
+                rightIndex++;
+
+            }
+
         }
 
-        System.out.println("Person array created\n");
-
-        /*
-        for (int i = 0; i < size; i++) {
-            sortedDebts[i] = new Person(i, netValue[i]);
-            System.out.println("" + sortedDebts[i]);
-        }*/
-
-
-
-        System.out.println("sorted now");
-
-        for (int i = 0; i < size; i++) {
-            System.out.println("" + sortedDebts[i]);
-        }
-
-
-
-        //break up people into two lists payers and receivers
-        //sort by value (highest to lowest ? )
-        //go one by one
-
-        /*
-        Person[] payers = new Person[numPayers];
-        Person[] receivers = new Person[size-numPayers];
-
-        for(int i = 0; i < size; i++) {
-
-
-        }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return list;
 
     }
 }
