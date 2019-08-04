@@ -85,14 +85,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         debt.addTransaction(0, 1, 45);
         debt.addTransaction(4, 2, 30);
         debt.addTransaction(2, 1, 12);
-        debt.addTransaction(3, 4, 6);
+        debt.addTransaction(3, 2, 49);
 
 
 
         //generate some random inputs here
 
+
+
         /*
         int first, second, val;
+        System.out.println("entering for loop");
         for (int i = 0; i < 80; i++) {
             first = (int)(5*Math.random());
             second = (int)(5*Math.random());
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 System.out.println("adding " + first + " owes " + second + " $" + val);
             }
         }*/
+
 
 
 
