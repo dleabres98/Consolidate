@@ -175,7 +175,7 @@ public class Recordbook {
 
             //if they are equal - need to test this
             } else {
-                System.out.println("\n\nequal\n\n");
+                //System.out.println("\n\nequal\n\n");
                 list.add("" + arr[leftIndex].returnID() + " owes " + arr[rightIndex].returnID() + " $" + (arr[rightIndex].returnNetAmt()));
                 leftIndex++;
                 rightIndex++;
